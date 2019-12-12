@@ -52,6 +52,8 @@ namespace argos {
 
       virtual void PostStep();
 
+      virtual CColor GetFloorColor(const CVector2& c_position);
+
    private:
       CSpace& m_cSpace;
 
