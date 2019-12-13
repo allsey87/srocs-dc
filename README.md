@@ -1,6 +1,6 @@
 # Adaptive construction for the SRoCS platform
 
-This repository contains the ARGoS controllers and loop functions for investigating dynamic construction using the SRoCS platform.
+This repository contains the ARGoS controllers and loop functions for investigating adaptive construction using the SRoCS platform.
 
 ## Dependencies
 * [ARGoS3 (beta56 or higher)](https://www.argos-sim.info/core.php)
@@ -54,9 +54,9 @@ make
 ## Running experiments
 The ARGoS configuration files for running experiments are configured automatically by CMake and placed in `build/experiments`. These configuration files will be updated everytime cmake or make is executed and the input configuration (e.g., `src/experiments/srocs.argos.in`) has been modified. To this end, you may want to consider modifying `src/experiments/srocs.argos.in` instead of `build/experiments/srocs.argos` to avoid your changes being overwritten.
 
-The Lua controllers for both the abstract and the SRoCS configurations use behavior trees to implement a robot's behavior. Support for these behavior trees is provided by [luabt](https://github.com/allsey87/luabt). This module is cloned recursively into this repository.
+The Lua controllers for the experiments use behavior trees to implement a robot's behavior. Support for these behavior trees is provided by [luabt](https://github.com/allsey87/luabt). This module is cloned recursively into this repository.
 
-In order to find the luabt module, it is recommended that you run the experiments from the same directory that the configuration file is located in. That is:
+In order to find the luabt module, it is recommended that you run the experiments from the same directory that the configuration file is located in. For example:
 
 ```bash
 cd build/experiments
