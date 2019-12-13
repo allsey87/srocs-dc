@@ -46,3 +46,23 @@ configure_file(
   ${CMAKE_SOURCE_DIR}/experiment/block.lua
   ${CMAKE_BINARY_DIR}/experiment/block.lua
   COPYONLY)
+
+configure_file(
+  ${CMAKE_SOURCE_DIR}/experiment/ApplicationNode.lua
+  ${CMAKE_BINARY_DIR}/experiment/ApplicationNode.lua
+  COPYONLY)
+
+configure_file(
+  ${CMAKE_SOURCE_DIR}/experiment/BuilderBotAPI.lua
+  ${CMAKE_BINARY_DIR}/experiment/BuilderBotAPI.lua
+  COPYONLY)
+
+configure_file(
+  ${CMAKE_SOURCE_DIR}/experiment/rules.lua
+  ${CMAKE_BINARY_DIR}/experiment/rules.lua
+  COPYONLY)
+
+file(COPY ${CMAKE_SOURCE_DIR}/experiment/AppNode DESTINATION ${CMAKE_BINARY_DIR}/experiment)
+file(COPY ${CMAKE_SOURCE_DIR}/experiment/Tools DESTINATION ${CMAKE_BINARY_DIR}/experiment)
+
+
