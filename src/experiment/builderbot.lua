@@ -88,9 +88,6 @@ function step()
    DebugMSG('-------- step begins ---------')
    robot.wifi.tx_data({robot.id})
    api.process()
-   for i, rf in pairs(robot.rangefinders) do
-      print(tostring(robot.id),tostring(i), tostring(rf.illuminance))
-   end
    behaviour()
 end
 
