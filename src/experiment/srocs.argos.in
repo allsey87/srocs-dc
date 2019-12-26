@@ -88,7 +88,7 @@
 
 
     <!-- add a fixed seed block -->
-    <block id="seed" movable="false">
+    <block id="seed" movable="false" init_led_color="orange">
       <body position="0,0,0" orientation="0,0,0"/>
       <controller config="block"/>
     </block>
