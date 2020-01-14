@@ -7,7 +7,7 @@
 --
 ----------------------------------------------------
 require('BlockTracking')
-
+pprint = require('pprint')
 local builderbot_api = {}
 
 -- consts --------------------------------------------
@@ -226,7 +226,38 @@ end
 
 
 builderbot_api.process_lights = function()
-   builderbot_api.light_source = {"poisition", "orientation"}
+   function exists(items, studied_item)
+      for index, value in pairs(items) do
+         if value == studied_item then
+            return true
+         end
+      end
+
+      return false
+   end
+   builderbot_api.light_source = {}
+   light_threshold = 0.35
+   -- range_finders_illuminance = {}
+   for i, rf in pairs(robot.rangefinders) do
+      -- print(tostring(robot.id),tostring(i), tostring(rf.illuminance))
+      if i == "1" and rf.illuminance > light_threshold and exists(builderbot_api.light_source,"front") ~= true then 
+         builderbot_api.light_source[#builderbot_api.light_source+1] = "front"
+      elseif i == "3" and rf.illuminance > light_threshold and exists(builderbot_api.light_source,"right") ~= true then 
+         builderbot_api.light_source[#builderbot_api.light_source+1] = "right"
+      elseif i == "4" and rf.illuminance > light_threshold and exists(builderbot_api.light_source,"right") ~= true then 
+         builderbot_api.light_source[#builderbot_api.light_source+1] = "right"
+      elseif i == "6" and rf.illuminance > light_threshold and exists(builderbot_api.light_source,"back") ~= true then 
+         builderbot_api.light_source[#builderbot_api.light_source+1] = "back"
+      elseif i == "7" and rf.illuminance > light_threshold and exists(builderbot_api.light_source,"back") ~= true then 
+         builderbot_api.light_source[#builderbot_api.light_source+1] = "back"
+      elseif i == "9" and rf.illuminance > light_threshold and exists(builderbot_api.light_source,"left") ~= true then 
+         builderbot_api.light_source[#builderbot_api.light_source+1] = "left"
+      elseif i == "10" and rf.illuminance > light_threshold and exists(builderbot_api.light_source,"left") ~= true then 
+         builderbot_api.light_source[#builderbot_api.light_source+1] = "left"
+      elseif i == "12" and rf.illuminance > light_threshold and exists(builderbot_api.light_source,"front") ~= true then 
+         builderbot_api.light_source[#builderbot_api.light_source+1] = "front"
+      end
+   end
    
 end
 

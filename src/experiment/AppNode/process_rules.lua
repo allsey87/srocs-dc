@@ -458,7 +458,18 @@ local create_process_rules_node = function(rules, rule_type, final_target)
 
          return result
       end
-
+      -----------------------------------------------------------------------------
+      ------------------ matching light source with rule --------------------------
+      function match_light_source(actual_lights, rule_light)
+         result = false
+         for i, actual_light in pairs(actual_lights) do
+            if actual_light == rule_light then 
+               result = true
+            end
+         end
+         
+         return result
+      end
       ----------------------------------------------------------------------------
       ------------------ matching rules and getting safe targets ------------------
       -- pprint.pprint(structure_list)
@@ -467,8 +478,9 @@ local create_process_rules_node = function(rules, rule_type, final_target)
             match_result = false
             for j, visible_structure in pairs(structure_list) do
                if target_block_safe(visible_structure, rule.target.reference_index) == true then
-                  res = match_structures(visible_structure, rule.structure)
-                  if res == true then
+                  res1 = match_structures(visible_structure, rule.structure)
+                  res2 = match_light_source(api.light_source, rule.light)
+                  if res1 == true and res2 == true then
                      match_result = true
                      possible_target = {}
                      possible_target.reference_id =
