@@ -58,7 +58,11 @@ namespace argos {
                static_cast<Real>(s_light.Duration);
             cPosition = s_light.Start + ((s_light.End - s_light.Start) * fProgress);
             s_light.Entity->MoveTo(cPosition, CQuaternion());
-            m_cSpace.GetFloorEntity().SetChanged();
+            try {
+               /* if floor exists, mark it as changed */
+               m_cSpace.GetFloorEntity().SetChanged();
+            }
+            catch(CARGoSException& ex) {}
          }
       }
    }
