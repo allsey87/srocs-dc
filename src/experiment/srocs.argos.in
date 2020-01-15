@@ -20,8 +20,8 @@
         <builderbot_lift_system implementation="default" />
         <builderbot_nfc implementation="default" />
         <wifi implementation="default" />
-        
-        
+
+
         <debug implementation="default">
           <interface id="logerr" output="stderr" />
           <interface id="log" output="stdout" />
@@ -39,16 +39,16 @@
         <wifi implementation="default" show_rays="false" />
         <builderbot_system implementation="default" />
       </sensors>
-      <params script="@CMAKE_BINARY_DIR@/experiment/builderbot.lua" rules='rules'/>
+      <params script="@CMAKE_BINARY_DIR@/experiment/builderbot.lua" rules="rules" />
     </lua_controller>
 
     <lua_controller id="block">
       <actuators>
         <directional_leds implementation="default" />
-        <radios implementation="default"/>
+        <radios implementation="default" />
       </actuators>
       <sensors>
-        <radios implementation="default" show_rays="false"/>
+        <radios implementation="default" show_rays="false" />
       </sensors>
       <params script="@CMAKE_BINARY_DIR@/experiment/block.lua" />
     </lua_controller>
@@ -61,7 +61,7 @@
     <lights medium="lights">
       <light id="light0" start="0.5,0,0.25" end="-0.5,0,0.25" duration="1000" />
     </lights>
-    <wall id="wall" size="1,10,2" position="0,0,0"/>
+    <wall id="wall" size="1,10,2" position="0,0,0" />
   </loop_functions>
 
 
@@ -86,19 +86,79 @@
     </box>
 
 
-
-    <!-- add a fixed seed block -->
-    <block id="seed" movable="false" init_led_color="orange">
-      <body position="0,0,0" orientation="0,0,0"/>
-      <controller config="block"/>
+    <!-- initiate wall blocks -->
+    <block id="block1,1" init_led_color="orange">
+      <body position="0,0,0" orientation="0,0,0" />
+      <controller config="block" />
     </block>
+    <block id="block1,2" init_led_color="orange">
+      <body position="0,0,0.05" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block2,1" init_led_color="orange">
+      <body position="0.05,0,0" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block2,2" init_led_color="orange">
+      <body position="0.05,0,0.05" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block3,1" init_led_color="orange">
+      <body position="0.1,0,0" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block3,2" init_led_color="orange">
+      <body position="0.1,0,0.05" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block4,1" init_led_color="orange">
+      <body position="0.15,0,0" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block4,2" init_led_color="orange">
+      <body position="0.15,0,0.05" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block5,1" init_led_color="orange">
+      <body position="0.2,0,0" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block5,2" init_led_color="orange">
+      <body position="0.2,0,0.05" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block6,1" init_led_color="orange">
+      <body position="0.25,0,0" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block6,2" init_led_color="orange">
+      <body position="0.25,0,0.05" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block7,1" init_led_color="orange">
+      <body position="0.3,0,0" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block7,2" init_led_color="orange">
+      <body position="0.3,0,0.05" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block8,1" init_led_color="orange">
+      <body position="0.35,0,0" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+    <block id="block8,2" init_led_color="orange">
+      <body position="0.35,0,0.05" orientation="0,0,0" />
+      <controller config="block" />
+    </block>
+
     <!-- distribute robots -->
     <distribute>
       <position method="uniform" min="-1.4,-1.4,0" max="1.4,1.4,0" />
       <orientation method="uniform" min="0,0,0" max="360,0,0" />
       <entity quantity="5" max_trials="50">
         <builderbot id="builderbot">
-          <controller config="builderbot"/>
+          <controller config="builderbot" />
         </builderbot>
       </entity>
     </distribute>
@@ -119,8 +179,8 @@
   <!-- * Media * -->
   <!-- ********* -->
   <media>
-    <directional_led id="directional_leds" index="grid" grid_size="20,20,20"/>
-    <led id="lights" index="grid" grid_size="20,20,20"/>
+    <directional_led id="directional_leds" index="grid" grid_size="20,20,20" />
+    <led id="lights" index="grid" grid_size="20,20,20" />
     <tag id="tags" index="grid" grid_size="20,20,20" />
     <radio id="nfc" index="grid" grid_size="20,20,20" />
     <radio id="wifi" index="grid" grid_size="20,20,20" />
