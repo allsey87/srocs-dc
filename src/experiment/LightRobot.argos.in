@@ -59,7 +59,7 @@
   <!-- ****************** -->
   <loop_functions library="@CMAKE_BINARY_DIR@/loop_functions/libdc_srocs_loop_functions" label="dc_srocs_loop_functions">
     <lights medium="lights">
-      <light id="light0" start="0.5,0,0.25" end="-0.5,0,0.25" duration="1000" />
+      <light id="light0" start="0.5,0,0.25" end="-0.5,0,0.25" duration="10000" />
     </lights>
     <wall id="wall" size="1,10,2" position="0,0,0" />
   </loop_functions>
@@ -68,35 +68,13 @@
   <!-- *********************** -->
   <!-- * Arena configuration * -->
   <!-- *********************** -->
-  <arena size="3, 3, 1" center="0, 0, 0">
+  <arena size="5, 5, 1" center="0, 0, 0">
     <!--floor id="floor" source="loop_functions" pixels_per_meter="1" /-->
+    <builderbot id="builderbot1" debug="false">
+      <body position="-0.30,-0.30,0" orientation="0,0,0"/>
+      <controller config="builderbot"/>
+    </builderbot>
 
-    <!-- add the arena walls -->
-    <box id="north" size="0.025,2.975,0.075" movable="false">
-      <body position="1.4875,0.0125,0" orientation="0,0,0" />
-    </box>
-    <box id="east" size="2.975,0.025,0.075" movable="false">
-      <body position="0.0125,-1.4875,0" orientation="0,0,0" />
-    </box>
-    <box id="south" size="0.025,2.975,0.075" movable="false">
-      <body position="-1.4875,-0.0125,0" orientation="0,0,0" />
-    </box>
-    <box id="west" size="2.975,0.025,0.075" movable="false">
-      <body position="-0.0125,1.4875,0" orientation="0,0,0" />
-    </box>
-
-
-
-    <!-- distribute robots -->
-    <distribute>
-      <position method="uniform" min="-1.4,-1.4,0" max="1.4,1.4,0" />
-      <orientation method="uniform" min="0,0,0" max="360,0,0" />
-      <entity quantity="1" max_trials="50">
-        <builderbot id="builderbot">
-          <controller config="builderbot" />
-        </builderbot>
-      </entity>
-    </distribute>
   </arena>
 
   <!-- ******************* -->
