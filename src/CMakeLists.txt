@@ -62,6 +62,20 @@ configure_file(
   ${CMAKE_BINARY_DIR}/experiment/rules.lua
   COPYONLY)
 
+configure_file(
+  ${CMAKE_SOURCE_DIR}/experiment/LightRobotVirtualLinkCntrl.lua
+  ${CMAKE_BINARY_DIR}/experiment/LightRobotVirtualLinkCntrl.lua
+  COPYONLY)
+
+configure_file(
+  ${CMAKE_SOURCE_DIR}/experiment/LightRobot.argos.in
+  ${CMAKE_BINARY_DIR}/experiment/LightRobot.argos)
+  
+configure_file(
+  ${CMAKE_SOURCE_DIR}/experiment/LightRobotRules.lua
+  ${CMAKE_BINARY_DIR}/experiment/LightRobotRules.lua
+  COPYONLY)
+
 file(COPY ${CMAKE_SOURCE_DIR}/experiment/AppNode DESTINATION ${CMAKE_BINARY_DIR}/experiment)
 file(COPY ${CMAKE_SOURCE_DIR}/experiment/Tools DESTINATION ${CMAKE_BINARY_DIR}/experiment)
 
