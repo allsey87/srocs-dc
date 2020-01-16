@@ -62,49 +62,41 @@ function reset()
                         }
                     }
                 }
-            }, {
-                type = 'selector',
-                children = {
-                    -- If light is at your left, then move forward
-                    {
-                        type = 'sequence',
-                        children = {
-                            -- Check light on (left or (left and front)) ONLY
-                            function()
+            }, -- Check light on (left or (left and front)) ONLY
+            function()
 
-                                res_left =
-                                    match_light_source(api.light_source, "left")
-                                res_front =
-                                    match_light_source(api.light_source, "front")
-                                res_back =
-                                    match_light_source(api.light_source, "back")
-                                res_right =
-                                    match_light_source(api.light_source, "right")
+                res_left = match_light_source(api.light_source, "left")
+                res_front = match_light_source(api.light_source, "front")
+                res_back = match_light_source(api.light_source, "back")
+                res_right = match_light_source(api.light_source, "right")
 
-                                if (res_left == true and res_back == false and
-                                    res_right == false) then
-                                    DebugMSG('Light on left detected')
-                                    return false, true
-                                else
-                                    DebugMSG('No light on left detected')
-                                    return false, false
-                                end
-                            end, -- Move forward
-                            function()
-                                DebugMSG('Moving forward')
-                                api.move(0.005, 0.005)
-                                return false, true
-                            end
+                if (res_front == true and res_left == true) then
+                    -- go forward
+                    api.move(0.005, 0.005)
+                    return false, true
+                elseif (res_back == true) then
+                    -- turn left
+                    api.move(-0.005, 0.005)
+                    return false, true
+                elseif (res_right == true) then
+                    -- turn left
+                    api.move(-0.005, 0.005)
+                    return false, true
+                elseif (res_front == true) then
+                    -- turn right 
+                    api.move(0.005, -0.005)
+                    return false, true
+                elseif (res_left == true) then
+                    -- turn left
+                    api.move(-0.005, 0.005)
+                    return false, true
 
-                        }
-                    }, -- If light is not on your left, then turn left
-                    function()
-                        DebugMSG('Turn left')
-                        api.move(-0.005, 0.005)
-                        return false, true
-                    end
-                }
-            }
+                else
+                    DebugMSG('I am lost in the dark')
+                    api.move(-0.005, -0.005)
+                    return false, false
+                end
+            end
 
         }
     }
