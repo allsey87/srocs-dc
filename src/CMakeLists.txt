@@ -24,6 +24,9 @@ include_directories(BEFORE ${CMAKE_SOURCE_DIR})
 # Compile loop function
 #
 add_subdirectory(loop_functions)
+if(ARGOS_COMPILE_QTOPENGL)
+   add_subdirectory(qtopengl_user_functions)
+endif(ARGOS_COMPILE_QTOPENGL)
 
 #
 # Configure examples

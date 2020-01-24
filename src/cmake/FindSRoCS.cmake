@@ -34,6 +34,17 @@ find_library(SROCS_ENTITIES_LIBRARY
   DOC "The SRoCS entity library"
 )
 
+find_library(ARGOS_QTOPENGL_LIBRARY
+    NAMES argos3plugin_${ARGOS_BUILD_FOR}_qtopengl
+    PATH_SUFFIXES argos3
+    DOC "The ARGoS QtOpenGL library"
+)
+
+if(ARGOS_QTOPENGL_LIBRARY)
+  include(ARGoSCheckQTOpenGL)
+endif(ARGOS_QTOPENGL_LIBRARY)
+
+
 #=============================================================================
 
 INCLUDE (FindPackageHandleStandardArgs)
