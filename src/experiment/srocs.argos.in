@@ -85,72 +85,17 @@
       <body position="-0.0125,1.4875,0" orientation="0,0,0" />
     </box>
 
-
     <!-- initiate wall blocks -->
-    <block id="block1,1" init_led_color="orange">
-      <body position="0,0,0" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block1,2" init_led_color="orange">
-      <body position="0,0,0.05" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block2,1" init_led_color="orange">
-      <body position="0.05,0,0" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block2,2" init_led_color="orange">
-      <body position="0.05,0,0.05" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block3,1" init_led_color="orange">
-      <body position="0.1,0,0" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block3,2" init_led_color="orange">
-      <body position="0.1,0,0.05" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block4,1" init_led_color="orange">
-      <body position="0.15,0,0" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block4,2" init_led_color="orange">
-      <body position="0.15,0,0.05" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block5,1" init_led_color="orange">
-      <body position="0.2,0,0" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block5,2" init_led_color="orange">
-      <body position="0.2,0,0.05" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block6,1" init_led_color="orange">
-      <body position="0.25,0,0" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block6,2" init_led_color="orange">
-      <body position="0.25,0,0.05" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block7,1" init_led_color="orange">
-      <body position="0.3,0,0" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block7,2" init_led_color="orange">
-      <body position="0.3,0,0.05" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block8,1" init_led_color="orange">
-      <body position="0.35,0,0" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
-    <block id="block8,2" init_led_color="orange">
-      <body position="0.35,0,0.05" orientation="0,0,0" />
-      <controller config="block" />
-    </block>
+    <distribute>
+      <position method="grid" center="0,0,0.0275" distances="0.055,0.055,0.055"
+                layout="10,1,2" />
+      <orientation method="constant" values="0,0,0" />
+      <entity quantity="20" max_trials="20">
+        <block id="block" init_led_color="orange">
+          <controller config="block" />
+        </block>
+      </entity>
+    </distribute>
 
     <!-- distribute robots -->
     <distribute>
@@ -193,7 +138,7 @@
     <qt-opengl lua_editor="false" show_boundary="false">
       <user_functions library="@CMAKE_BINARY_DIR@/qtopengl_user_functions/libdc_qtopengl_user_functions"
                       label="dc_qtopengl_user_functions" >
-         <camera_paths use_camera="0">
+         <!--camera_paths use_camera="0">
             <path duration="250">
               <start position=" 0,  -2.5,1" look_at="0,0,0.05" lens_focal_length="78" />
               <end position=" 2.5,-2.5,1" look_at="0,0,0.05" lens_focal_length="92" />
@@ -226,7 +171,7 @@
               <start position="-2.5,-2.5,1" look_at="0,0,0.05" lens_focal_length="92" />
               <end position=" 0,  -2.5,1" look_at="0,0,0.05" lens_focal_length="78" />
             </path>
-         </camera_paths>
+         </camera_paths-->
       </user_functions>
       <camera>
         <placement idx="0" position=" 0,  -2.5,1" look_at="0,0,0.05" lens_focal_length="78" />
