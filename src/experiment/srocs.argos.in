@@ -59,7 +59,7 @@
   <!-- ****************** -->
   <loop_functions library="@CMAKE_BINARY_DIR@/loop_functions/libdc_srocs_loop_functions" label="dc_srocs_loop_functions">
     <lights medium="lights">
-      <light id="light0" start="0.5,0,0.25" end="-0.5,0,0.25" duration="1000" />
+      <light id="light0" start="0.5,1.4,0.25" end="0.5,1.4,0.25" duration="1000" />
     </lights>
     <wall id="wall" size="1,10,2" position="0,0,0" />
   </loop_functions>
@@ -87,15 +87,37 @@
 
     <!-- initiate wall blocks -->
     <distribute>
-      <position method="grid" center="0,0,0.0275" distances="0.055,0.055,0.055"
-                layout="10,1,2" />
+      <position method="grid" center="0.5,0,0.0275" distances="0.055,0.055,0.055" layout="1,10,1" />
       <orientation method="constant" values="0,0,0" />
-      <entity quantity="20" max_trials="20">
-        <block id="block" init_led_color="orange">
+      <entity quantity="10" max_trials="20">
+        <block id="block1" init_led_color="orange">
           <controller config="block" />
         </block>
       </entity>
     </distribute>
+
+    <distribute>
+      <position method="grid" center="0.5,0.125,0.0825" distances="0.055,0.055,0.055" layout="1,5,1" />
+      <orientation method="constant" values="0,0,0" />
+      <entity quantity="5" max_trials="20">
+        <block id="block2" init_led_color="orange">
+          <controller config="block" />
+        </block>
+      </entity>
+    </distribute>
+
+
+    <!-- initiate wall blocks -->
+    <distribute>
+      <position method="grid" center="0,0,0.0275" distances="0.055,0.055,0.055" layout="1,10,2" />
+      <orientation method="constant" values="0,0,0" />
+      <entity quantity="5" max_trials="20">
+        <block id="blockscnd" init_led_color="orange">
+          <controller config="block" />
+        </block>
+      </entity>
+    </distribute>
+
 
     <!-- distribute robots -->
     <distribute>
@@ -136,9 +158,8 @@
   <!-- ****************** -->
   <visualization>
     <qt-opengl lua_editor="false" show_boundary="false">
-      <user_functions library="@CMAKE_BINARY_DIR@/qtopengl_user_functions/libdc_qtopengl_user_functions"
-                      label="dc_qtopengl_user_functions" >
-         <!--camera_paths use_camera="0">
+      <user_functions library="@CMAKE_BINARY_DIR@/qtopengl_user_functions/libdc_qtopengl_user_functions" label="dc_qtopengl_user_functions">
+        <!--camera_paths use_camera="0">
             <path duration="250">
               <start position=" 0,  -2.5,1" look_at="0,0,0.05" lens_focal_length="78" />
               <end position=" 2.5,-2.5,1" look_at="0,0,0.05" lens_focal_length="92" />
