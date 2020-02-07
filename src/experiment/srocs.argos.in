@@ -86,7 +86,7 @@
 
     <!-- initiate wall blocks -->
     <distribute>
-      <position method="grid" center="0,0,0" distances="0.055,0.055,0.055" layout="1,5,1" />
+      <position method="grid" center="0,0,0" distances="0.055,0.055,0.055" layout="5,1,1" />
       <orientation method="constant" values="0,0,0" />
       <entity quantity="5" max_trials="5">
         <block id="wall" init_led_color="orange">
