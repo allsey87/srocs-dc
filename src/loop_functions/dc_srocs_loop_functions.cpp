@@ -12,7 +12,7 @@ namespace argos {
    /****************************************/
 
    CDCSRoCSLoopFunctions::CDCSRoCSLoopFunctions() :
-      m_cSpace(CSimulator::GetInstance().GetSpace()) {}
+      m_unStep(0) {}
 
    /****************************************/
    /****************************************/
@@ -24,25 +24,23 @@ namespace argos {
       GetNodeAttribute(tLights, "medium", strLightMedium);
       CLEDMedium& cLightMedium = 
          CSimulator::GetInstance().GetMedium<CLEDMedium>(strLightMedium);
-      /* get the individual lights */
-      TConfigurationNodeIterator itLight("light");
-      std::string strId;
-      CVector3 cStart;
-      CVector3 cEnd;
-      UInt32 unDuration;
-      for(itLight =  itLight.begin(&tLights);
-          itLight != itLight.end();
-          ++itLight) {
-         GetNodeAttribute(*itLight, "id", strId);
-         GetNodeAttribute(*itLight, "start", cStart);
-         GetNodeAttribute(*itLight, "end", cEnd);
-         GetNodeAttribute(*itLight, "duration", unDuration);
-         m_vecLights.emplace_back(new CLightEntity(strId, cStart, CColor::YELLOW, 1.0),
-                                  cStart, cEnd, unDuration);
+      std::string strLightToggle;
+      GetNodeAttribute(tLights, "toggle", strLightToggle);
+      std::vector<std::string> vecToggle;
+      Tokenize(strLightToggle, vecToggle, ",");
+      for(const std::string& str : vecToggle) {
+         m_vecToggle.push_back(std::stoul(str));
       }
-      for(SLight& s_light : m_vecLights) {
-         AddEntity(*s_light.Entity);
-         cLightMedium.AddEntity(*s_light.Entity);
+      /* create lights */
+      for(const std::tuple<const char*, CVector3, CColor, Real>& c_config : m_vecLightConfigs) {
+         CLightEntity* pcLight = 
+            new CLightEntity(std::get<const char*>(c_config),
+                             std::get<CVector3>(c_config),
+                             std::get<CColor>(c_config),
+                             std::get<Real>(c_config));
+         AddEntity(*pcLight);
+         cLightMedium.AddEntity(*pcLight);
+         m_vecLights.push_back(pcLight);
       }
       cLightMedium.Update();
    }
@@ -50,21 +48,33 @@ namespace argos {
    /****************************************/
    /****************************************/
 
+   void CDCSRoCSLoopFunctions::Reset() {
+      m_unStep = 0;
+   }
+
+   /****************************************/
+   /****************************************/
+
    void CDCSRoCSLoopFunctions::PostStep() {
-      CVector3 cPosition;
-      for(SLight& s_light : m_vecLights) {
-         if(m_cSpace.GetSimulationClock() < s_light.Duration) {
-            Real fProgress = static_cast<Real>(m_cSpace.GetSimulationClock()) /
-               static_cast<Real>(s_light.Duration);
-            cPosition = s_light.Start + ((s_light.End - s_light.Start) * fProgress);
-            s_light.Entity->MoveTo(cPosition, CQuaternion());
-            try {
-               /* if floor exists, mark it as changed */
-               m_cSpace.GetFloorEntity().SetChanged();
+      m_unStep += 1;
+      for(unsigned long un_toggle : m_vecToggle) {
+         if(un_toggle == m_unStep) {
+            for(CLightEntity* pc_light : m_vecLights) {
+               if(pc_light->GetColor() == m_cLightOn) {
+                  pc_light->SetColor(m_cLightOff);
+               }
+               else {
+                  pc_light->SetColor(m_cLightOn);
+               }
             }
-            catch(CARGoSException& ex) {}
+            break;
          }
       }
+      /* if floor exists, mark it as changed */
+      try {
+         GetSpace().GetFloorEntity().SetChanged();
+      }
+      catch(CARGoSException& ex) {}
    }
 
    /****************************************/
@@ -74,9 +84,9 @@ namespace argos {
       Real fTotalLight = 0.0;
       CVector3 cFloorPosition(c_position.GetX(), c_position.GetY(), 0.0);
       /* accumulate the light sources */
-      for(SLight& s_light : m_vecLights) {
-         const CVector3& cLightPosition = s_light.Entity->GetPosition();
-         const CColor& cLightColor = s_light.Entity->GetColor();
+      for(CLightEntity* pc_light : m_vecLights) {
+         const CVector3& cLightPosition = pc_light->GetPosition();
+         const CColor& cLightColor = pc_light->GetColor();
          /* initialize brightness with the grayscale value of the light */
          Real fBrightness = cLightColor.ToGrayScale();
          /* decrease fBrightness with respect to inverse square law */
@@ -97,6 +107,20 @@ namespace argos {
       UInt8 unTotalLight = static_cast<UInt8>(fTotalLight);
       return CColor(unTotalLight, unTotalLight, unTotalLight);
    }
+
+   /****************************************/
+   /****************************************/
+
+   const CColor CDCSRoCSLoopFunctions::m_cLightOn = CColor(255, 240, 100);
+
+   const CColor CDCSRoCSLoopFunctions::m_cLightOff = CColor(40, 40, 30);
+
+   const std::vector<std::tuple<const char*, CVector3, CColor, Real> > CDCSRoCSLoopFunctions::m_vecLightConfigs = {
+      std::make_tuple("North", CVector3(1.45,0,0.25), m_cLightOn, 1.0),
+      std::make_tuple("East", CVector3(0,-1.45,0.25), m_cLightOff, 1.0),
+      std::make_tuple("South", CVector3(-1.45,0,0.25), m_cLightOn, 1.0),
+      std::make_tuple("West", CVector3(0,1.45,0.25), m_cLightOff, 1.0),
+   };
 
    /****************************************/
    /****************************************/

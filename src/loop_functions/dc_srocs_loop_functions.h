@@ -19,32 +19,13 @@ namespace argos {
 
    public:
 
-      struct SLight {
-         /* constructor */
-         SLight(CLightEntity* pc_light_entity,
-                const CVector3& c_start,
-                const CVector3& c_end,
-                UInt32 un_duration) :
-            Entity(pc_light_entity),
-            Start(c_start),
-            End(c_end),
-            Duration(un_duration) {}
-         /* members */
-         CLightEntity* Entity;
-         CVector3 Start;
-         CVector3 End;
-         UInt32 Duration;
-      };
-
-   public:
-
       CDCSRoCSLoopFunctions();
 
       virtual ~CDCSRoCSLoopFunctions() {}
 
       virtual void Init(TConfigurationNode& t_tree);
 
-      //virtual void Reset();
+      virtual void Reset();
 
       //virtual void Destroy();
 
@@ -55,12 +36,14 @@ namespace argos {
       virtual CColor GetFloorColor(const CVector2& c_position);
 
    private:
-      CSpace& m_cSpace;
+      unsigned long m_unStep;
+      std::vector<CLightEntity*> m_vecLights;
+      std::vector<unsigned long> m_vecToggle;
 
-      std::vector<SLight> m_vecLights;
+      const static CColor m_cLightOn;
+      const static CColor m_cLightOff;
+      const static std::vector<std::tuple<const char*, CVector3, CColor, Real> > m_vecLightConfigs;
 
-      std::vector<CBuilderBotEntity*> m_vecRobots;
-      std::vector<CBlockEntity*> m_vecBlocks;
 
    };
 
