@@ -79,6 +79,10 @@ configure_file(
   ${CMAKE_BINARY_DIR}/experiment/LightRobotRules.lua
   COPYONLY)
 
+configure_file(
+  ${CMAKE_SOURCE_DIR}/experiment/ants.argos.in
+  ${CMAKE_BINARY_DIR}/experiment/ants.argos)
+
 file(COPY ${CMAKE_SOURCE_DIR}/experiment/AppNode DESTINATION ${CMAKE_BINARY_DIR}/experiment)
 file(COPY ${CMAKE_SOURCE_DIR}/experiment/Tools DESTINATION ${CMAKE_BINARY_DIR}/experiment)
 
