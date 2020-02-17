@@ -96,11 +96,13 @@ namespace argos {
          Real fCosine = (CVector3::Z.DotProduct(cFloorToLight) / (CVector3::Z.Length() * cFloorToLight.Length()));
          fBrightness *= (fCosine + 1.0) / 2.0;
          /* decrease fBrightness with respect to obstacles between the light source and the sensor */
+         /*
          CRay3 cLightRay(cFloorPosition, cLightPosition);
          SEmbodiedEntityIntersectionItem sIntersection;
          if(GetClosestEmbodiedEntityIntersectedByRay(sIntersection, cLightRay)) {
             fBrightness *= Abs(0.5 - sIntersection.TOnRay);
          }
+         */
          fTotalLight += fBrightness;
       }
       fTotalLight = std::min(fTotalLight, static_cast<Real>(UINT8_MAX));
