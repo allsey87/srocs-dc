@@ -62,13 +62,13 @@ function reset()
                }
             }
          },
-         app.create_process_rules_node(rules, 'place', BTDATA.target),
+         app.create_process_rules_node(rules, 'pickup', BTDATA.target),
          function()
             if BTDATA.target == nil then
-               pprint.pprint('target: ', 'nil')
+               -- pprint.pprint('target: ', 'nil')
                return false, false
             else
-               pprint.pprint('target: ', BTDATA.target)
+               -- pprint.pprint('target: ', BTDATA.target)
                return false, true
             end
          end
