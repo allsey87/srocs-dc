@@ -461,21 +461,23 @@ local create_process_rules_node = function(rules, rule_type, final_target)
         end
         -----------------------------------------------------------------------------
         ------------------ matching light source with rule --------------------------
-        function match_light_source(actual_lights, rule_lights)
-            result = false
-            for i, rule_light in pairs(rule_lights) do
-                for j, actual_light in pairs(actual_lights) do
-                    if actual_light == rule_light then
-                        result = true
-                    else
-                        result = false
-                    end
-                end
-                if result == false then break end
-            end
+        -- function match_light_source(actual_lights, rule_lights)
+        --     result = false
+        --     for i, rule_light in pairs(rule_lights) do
+        --         for j, actual_light in pairs(actual_lights) do
+        --             if actual_light == rule_light then
+        --                 result = true
+        --             else
+        --                 result = false
+        --             end
+        --         end
+        --         if result == false then break end
+        --     end
 
-            return result
-        end
+        --     return result
+        -- end
+   
+
         ----------------------------------------------------------------------------
         ------------------ matching rules and getting safe targets ------------------
         -- pprint.pprint(structure_list)

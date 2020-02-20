@@ -232,6 +232,31 @@ builderbot_api.process_obstacles = function()
     end
 end
 
+-- debug arrow ---------------------------------------
+------------------------------------------------------
+builderbot_api.debug_arrow = function(color, from, to)
+    if robot.debug == nil then return end
+
+    robot.debug.draw('arrow(' .. color .. ')(' .. from:__tostring() .. ')(' ..
+                         to:__tostring() .. ')')
+end
+
+-- visualize_light_axis------------
+-----------------------------------
+function visualize_light_axis(light_axis_)
+    if light_axis_ == "Y" then
+        local y1 = vector3(0, 1, 0)
+        local y2 = vector3(0, -1, 0)
+        builderbot_api.debug_arrow("yellow", vector3(0, 0, 0), 0.2 * y1)
+        builderbot_api.debug_arrow("yellow", vector3(0, 0, 0), 0.2 * y2)
+    elseif light_axis_ == "X" then
+        local x1 = vector3(1, 0, 0)
+        local x2 = vector3(-1, 0, 0)
+        builderbot_api.debug_arrow("yellow", vector3(0, 0, 0), 0.2 * x1)
+        builderbot_api.debug_arrow("yellow", vector3(0, 0, 0), 0.2 * x2)
+    end
+end
+
 builderbot_api.process_lights = function()
     function exists(items, studied_item)
         for index, value in pairs(items) do
@@ -287,7 +312,7 @@ builderbot_api.process_lights = function()
     elseif builderbot_api.light_source[1][1] == "back" then
         builderbot_api.light_axis = "X"
     end
-    print("light axis: ", builderbot_api.light_axis)
+    visualize_light_axis(builderbot_api.light_axis)
 end
 
 -- process for each step -----------------------------
@@ -302,13 +327,5 @@ builderbot_api.process = function()
     builderbot_api.process_lights()
 end
 
--- debug arrow ---------------------------------------
-------------------------------------------------------
-builderbot_api.debug_arrow = function(color, from, to)
-    if robot.debug == nil then return end
-
-    robot.debug.draw('arrow(' .. color .. ')(' .. from:__tostring() .. ')(' ..
-                         to:__tostring() .. ')')
-end
 
 return builderbot_api
