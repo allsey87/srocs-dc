@@ -46,7 +46,7 @@ function reset()
                            robot.lift_system.position > 0.13 - api.parameters.lift_system_position_tolerance and
                               robot.lift_system.position < 0.13 + api.parameters.lift_system_position_tolerance
                          then
-                           DebugMSG('lift_in position')
+                           -- DebugMSG('lift_in position')
                            return false, true
                         else
                            DebugMSG('lift_not in position')

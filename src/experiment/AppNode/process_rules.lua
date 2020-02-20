@@ -322,6 +322,8 @@ local create_process_rules_node = function(rules, rule_type, final_target)
         targets_list = {}
 
         function match_structures(visible_structure, rule_structure)
+            -- pprint.pprint(visible_structure)
+            -- pprint.pprint(rule_structure)
             function tablelength(T)
                 local count = 0
                 for _ in pairs(T) do count = count + 1 end
@@ -478,15 +480,20 @@ local create_process_rules_node = function(rules, rule_type, final_target)
         ------------------ matching rules and getting safe targets ------------------
         -- pprint.pprint(structure_list)
         for i, rule in pairs(rules.list) do
+
             if rule.rule_type == rule_type then
                 match_result = false
                 for j, visible_structure in pairs(structure_list) do
                     if target_block_safe(visible_structure,
                                          rule.target.reference_index) == true then
+                        print("processing rule", i)
                         res1 = match_structures(visible_structure,
                                                 rule.structure)
                         -- res2 = match_light_source(api.light_source, rule.light)
                         res2 = (api.light_axis == rule.light_axis)
+                        print("structure matching result:", res1,
+                              " light axis matching result:", res2)
+
                         if res1 == true and res2 == true then
                             match_result = true
                             possible_target = {}
