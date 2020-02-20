@@ -55,7 +55,7 @@
   <!-- * Loop functions * -->
   <!-- ****************** -->
   <loop_functions library="@CMAKE_BINARY_DIR@/loop_functions/libdc_srocs_loop_functions" label="dc_srocs_loop_functions">
-    <lights medium="lights" toggle="100,150,200" />
+    <lights medium="lights" toggle="" />
   </loop_functions>
 
   <!-- *********************** -->
