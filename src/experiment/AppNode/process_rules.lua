@@ -120,7 +120,7 @@ function group_blocks()
         -- share at least one edge, but it would require transforming one block position to the other block
 
         result = false
-        orientation_tolerance = 0.0174533 -- one degree
+        orientation_tolerance = 0.087 -- five degree
         distance_tolerance = 0.08
         orientation_diff = math.sqrt((block_1.orientation_robot.x -
                                          block_2.orientation_robot.x) ^ 2 +
@@ -225,13 +225,15 @@ function group_blocks()
     -- end
     filtered_groups_list = groups_of_connected_blocks
     -- builderbot_api.structure_list = groups_of_connected_blocks
+    
+    -- pprint.pprint(filtered_groups_list)
+    print(#filtered_groups_list)
     return filtered_groups_list
 end
 
 local create_process_rules_node = function(rules, rule_type, final_target)
     final_target.reference_id = nil
     final_target.offset = vector3(0, 0, 0)
-
     return function()
         grouped_blocks = group_blocks()
         if #grouped_blocks == 0 then return false, false end
@@ -295,17 +297,21 @@ local create_process_rules_node = function(rules, rule_type, final_target)
                         lowest_x = indexed_block.index.x
                     end
                     if indexed_block.index.y < lowest_y then
-                        lowest_y = indexed_block.index.x
+                        lowest_y = indexed_block.index.y
                     end
                     if indexed_block.index.z < lowest_z then
-                        lowest_z = indexed_block.index.x
+                        lowest_z = indexed_block.index.z
                     end
                 end
+
                 return lowest_x, lowest_y, lowest_z
             end
             lowest_x, lowest_y, lowest_z = get_lowest_indeces(bj_in_r2_pos)
 
             -- tranform indexed blocks to unified origin
+
+            -- print("before")
+            -- pprint.pprint(bj_in_r2_pos)
             for j, block in pairs(bj_in_r2_pos) do
                 block.index.x = block.index.x - lowest_x
                 block.index.y = block.index.y - lowest_y
@@ -314,42 +320,66 @@ local create_process_rules_node = function(rules, rule_type, final_target)
             table.insert(local_list_of_structures, bj_in_r2_pos)
         end
         structure_list = local_list_of_structures
+        -- print("after")
         -- pprint.pprint(structure_list)
         ---------------------------------------------------------------------------------------
         -- Match current structures against rules
         final_target.reference_id = nil
         final_target.offset = nil
         targets_list = {}
-
-        function match_structures(visible_structure, rule_structure)
-            -- pprint.pprint(visible_structure)
-            -- pprint.pprint(rule_structure)
+        winning_rules = {}
+        function match_structures(visible_structure, rule_structure,
+                                  rule_reference_index)
             function tablelength(T)
                 local count = 0
                 for _ in pairs(T) do count = count + 1 end
                 return count
             end
-            structure_matching_result = true
-            if tablelength(visible_structure) ~= #rule_structure then
-                structure_matching_result = false
-            else
-                for j, rule_block in pairs(rule_structure) do
-                    block_matched = false
-                    for k, visible_block in pairs(visible_structure) do
-                        if visible_block.index == rule_block.index then -- found required index
-                            if (visible_block.type == rule_block.type) or
-                                (rule_block.type == 'X') then -- found the same required type
-                                block_matched = true
-                                break
-                            end
-                        end
-                    end
-                    if block_matched == false then
-                        structure_matching_result = false
-                        break
+            function remove_non_reference_neighbors()
+                -- pprint.pprint(visible_structure)
+                -- pprint.pprint(rule_structure)
+                -- print(rule_reference_index)
+                temp_table = {}
+                for j, visible_block in pairs(visible_structure) do
+                    dx =
+                        math.abs(rule_reference_index.x - visible_block.index.x)
+                    dy =
+                        math.abs(rule_reference_index.y - visible_block.index.y)
+                    dz =
+                        math.abs(rule_reference_index.z - visible_block.index.z)
+                    if dx <= 1 and dy <= 1 and dz <= 1 then
+                        table.insert(temp_table, visible_block)
                     end
                 end
+                -- pprint.pprint("temp", temp_table)
+                visible_structure = temp_table
             end
+            structure_matching_result = true
+            if tablelength(visible_structure) ~= #rule_structure then
+                remove_non_reference_neighbors()
+                if tablelength(visible_structure) ~= #rule_structure then
+                    structure_matching_result = false
+                end
+            end
+            -- after removing far from target blocks
+            -- pprint.pprint(visible_structure,rule_structure) 
+            for j, rule_block in pairs(rule_structure) do
+                block_matched = false
+                for k, visible_block in pairs(visible_structure) do
+                    if visible_block.index == rule_block.index then -- found required index
+                        if (visible_block.type == rule_block.type) or
+                            (rule_block.type == 'X') then -- found the same required type
+                            block_matched = true
+                            break
+                        end
+                    end
+                end
+                if block_matched == false then
+                    structure_matching_result = false
+                    break
+                end
+            end
+
             return structure_matching_result
         end
         function get_reference_id_from_index(reference_index, visible_structure)
@@ -441,16 +471,21 @@ local create_process_rules_node = function(rules, rule_type, final_target)
         function target_block_safe(indexed_structure, rule_reference_index)
             result = false
             target_block = nil
+            -- pprint.pprint(indexed_structure)
             target_block_reference_id = get_reference_id_from_index(
                                             rule_reference_index,
                                             indexed_structure)
+            -- print("reference id:", target_block_reference_id)
             for b, block in pairs(api.blocks) do
+                -- print("block id: block.id")
                 if tonumber(target_block_reference_id) == tonumber(block.id) then
                     target_block = block
                 end
             end
+
             if target_block == nil then
                 result = false -- target block is not in the structure
+                -- print("target block is not in the structure")
                 return result
             end
             if check_block_in_safe_zone(target_block) == true then
@@ -476,28 +511,33 @@ local create_process_rules_node = function(rules, rule_type, final_target)
 
         --     return result
         -- end
-   
 
         ----------------------------------------------------------------------------
         ------------------ matching rules and getting safe targets ------------------
         -- pprint.pprint(structure_list)
-        for i, rule in pairs(rules.list) do
+        -- pprint.pprint(rules)
 
+        for i, rule in pairs(rules.list) do
             if rule.rule_type == rule_type then
                 match_result = false
+
                 for j, visible_structure in pairs(structure_list) do
+                    -- print("processing rule: ", rule.rule_id)
+                    -- pprint.pprint(visible_structure)
                     if target_block_safe(visible_structure,
                                          rule.target.reference_index) == true then
-                        print("processing rule", i)
-                        res1 = match_structures(visible_structure,
-                                                rule.structure)
+                        -- pprint.pprint(visible_structure, rule.structure)
+                        res1 = match_structures(deepcopy(visible_structure),
+                                                deepcopy(rule.structure),
+                                                rule.target.reference_index)
                         -- res2 = match_light_source(api.light_source, rule.light)
                         res2 = (api.light_axis == rule.light_axis)
-                        print("structure matching result:", res1,
-                              " light axis matching result:", res2)
+                        -- print("structure matching result:", res1,
+                        --       " light axis matching result:", res2)
 
                         if res1 == true and res2 == true then
                             match_result = true
+                            table.insert(winning_rules, rule.rule_id)
                             possible_target = {}
                             possible_target.reference_id =
                                 get_reference_id_from_index(
@@ -603,6 +643,7 @@ local create_process_rules_node = function(rules, rule_type, final_target)
                 break
             end
         end
+        pprint.pprint("winning rules:", winning_rules)
         pprint.pprint(final_target)
         -- DebugMSG('final target:', final_target)
         if #targets_list > 0 then

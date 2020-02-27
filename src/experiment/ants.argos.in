@@ -55,7 +55,7 @@
   <!-- * Loop functions * -->
   <!-- ****************** -->
   <loop_functions library="@CMAKE_BINARY_DIR@/loop_functions/libdc_srocs_loop_functions" label="dc_srocs_loop_functions">
-    <lights medium="lights" toggle="" />
+    <lights medium="lights" toggle="1" />
   </loop_functions>
 
   <!-- *********************** -->
@@ -90,11 +90,11 @@
       </entity>
     </distribute> -->
 
-    <block id="block1" debug="false" init_led_color="orange">
+    <block id="block1" debug="false" init_led_color="green">
       <body position="0,0,0" orientation="0,0,0" />
       <controller config="block" />
     </block>
-    <block id="block2" debug="false" init_led_color="orange">
+    <block id="block2" debug="false" init_led_color="green">
       <body position="0.055,0,0" orientation="0,0,0" />
       <controller config="block" />
     </block>
@@ -102,11 +102,11 @@
       <body position="0.11,0,0" orientation="0,0,0" />
       <controller config="block" />
     </block>
-    <block id="block4" debug="false" init_led_color="orange">
+    <block id="block4" debug="false" init_led_color="green">
       <body position="0.165,0,0" orientation="0,0,0" />
       <controller config="block" />
     </block>
-    <block id="block5" debug="false" init_led_color="orange">
+    <block id="block5" debug="false" init_led_color="green">
       <body position="0.22,0,0" orientation="0,0,0" />
       <controller config="block" />
     </block>
@@ -150,7 +150,7 @@
   <!-- * Visualization * -->
   <!-- ****************** -->
   <visualization>
-    <qt-opengl lua_editor="false" show_boundary="false">
+    <qt-opengl lua_editor="true" show_boundary="false">
       <user_functions library="@CMAKE_BINARY_DIR@/qtopengl_user_functions/libdc_qtopengl_user_functions" label="dc_qtopengl_user_functions">
         <!--camera_paths use_camera="0">
             <path duration="250">
