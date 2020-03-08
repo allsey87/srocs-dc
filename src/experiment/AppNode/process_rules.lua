@@ -136,75 +136,197 @@ function group_blocks()
 
         if orientation_diff > orientation_tolerance then
             result = false
+            print(block_1.id,block_2.id,"orientation fault")
         else
             if position_diff < distance_tolerance then
                 result = true
             else
                 result = false
+                print(block_1.id,block_2.id,"distance fault: ", position_diff)
+                
             end
         end
+        
         return result
     end
-    function add_connection_to_list(block_1, block_2)
-        for i, group in pairs(groups_of_connected_blocks) do
-            for j, block in pairs(group) do
-                if block_1.id == block.id and block_1.id ~= block_2.id then
-                    table.insert(group, block_2)
-                    return
-                elseif block_2.id == block.id and block_1.id ~= block_2.id then
-                    table.insert(group, block_1)
-                    return
-                end
-            end
-        end
-        -- if the group is new, insert it to the list
-        if block_1.id ~= block_2.id then
-            group = {block_1, block_2}
-        else
-            group = {block_1}
-        end
-        table.insert(groups_of_connected_blocks, group)
-    end
+    -- function add_connection_to_list(block_1, block_2)
+    --     for i, group in pairs(groups_of_connected_blocks) do
+    --         for j, block in pairs(group) do
+    --             if block_1.id == block.id and block_1.id ~= block_2.id then
+    --                 table.insert(group, block_2)
+    --                 return
+    --             elseif block_2.id == block.id and block_1.id ~= block_2.id then
+    --                 table.insert(group, block_1)
+    --                 return
+    --             end
+    --         end
+    --     end
+    --     -- if the group is new, insert it to the list
+    --     if block_1.id ~= block_2.id then
+    --         group = {block_1, block_2}
+    --     else
+    --         group = {block_1}
+    --     end
+    --     table.insert(groups_of_connected_blocks, group)
+    -- end
 
-    function check_connection_exist(block_1, block_2)
-        function has_value(group, block)
-            for index, value in pairs(group) do
-                if value.id == block.id then return true end
-            end
+    -- function check_connection_exist(block_1, block_2)
+    --     function has_value(group, block)
+    --         for index, value in pairs(group) do
+    --             if value.id == block.id then return true end
+    --         end
 
-            return false
-        end
+    --         return false
+    --     end
 
-        result = false
-        for i, group in pairs(groups_of_connected_blocks) do
-            if has_value(group, block_1) and has_value(group, block_2) then
-                result = true
-            end
-        end
-        return result
-    end
+    --     result = false
+    --     for i, group in pairs(groups_of_connected_blocks) do
+    --         if has_value(group, block_1) and has_value(group, block_2) then
+    --             result = true
+    --         end
+    --     end
+    --     return result
+    -- end
 
+    lookup_table = {}
     for i, block_1 in pairs(api.blocks) do
+        b_conn = {}
+        b_conn["block_num"] = block_1.id
+        b_conn["processed"] = false
+        b_conn["connections"] = {}
         for j, block_2 in pairs(api.blocks) do
-            if block_1.id ~= block_2.id then
-                if check_connection_exist(block_1, block_2) == false then
-                    connected = check_connected(block_1, block_2)
-                    if connected == true then
-                        add_connection_to_list(block_1, block_2)
-                    end
+            if j ~= i then
+                connected = check_connected(block_1, block_2)
+                if connected == true then
+                    table.insert(b_conn["connections"], block_2.id)
                 end
             end
         end
+        table.insert(lookup_table, b_conn)
     end
-    for i, block_1 in pairs(api.blocks) do
-        for j, block_2 in pairs(api.blocks) do
-            if block_1.id == block_2.id then
-                if check_connection_exist(block_1, block_2) == false then
-                    add_connection_to_list(block_1, block_2)
-                end
+
+    function get_node(block_num)
+        for i, listed_node in pairs(lookup_table) do
+            if block_num == listed_node["block_num"] then
+                return listed_node
             end
         end
     end
+    function process_node(node)
+
+        node_listed = get_node(node["block_num"])
+        for i, conn in pairs(node_listed["connections"]) do
+            conn_node_listed = get_node(conn)
+            if conn_node_listed["processed"] == false then
+                conn_node_listed["processed"] = true
+                conn_node = {}
+                conn_node["block_num"] = conn_node_listed["block_num"]
+                conn_node["connections"] = {}
+                table.insert(node["connections"], conn_node)
+                process_node(conn_node)
+            end
+
+        end
+
+    end
+    nodes_tree = {}
+    for i, listed_node in pairs(lookup_table) do
+        if listed_node["processed"] == false then
+            listed_node["processed"] = true
+            node = {}
+            node["block_num"] = listed_node["block_num"]
+            node["connections"] = {}
+
+            table.insert(nodes_tree, node)
+            process_node(node)
+        end
+    end
+    -- pprint.pprint(lookup_table)
+    -- pprint.pprint(nodes_tree)
+    groups_of_connected_blocks_new = {}
+
+    -- trees to groups
+    function get_block(block_id)
+        for i, block in pairs(api.blocks) do
+            if block.id == block_id then return block end
+        end
+    end
+
+    function add_conn_node(conn_node, group)
+        block = get_block(conn_node["block_num"])
+        table.insert(group, block)
+        for j, conn_node_sub in pairs(conn_node["connections"]) do
+            add_conn_node(conn_node_sub, group)
+        end
+    end
+
+    for i, node_tree in pairs(nodes_tree) do
+        group = {}
+        table.insert(groups_of_connected_blocks_new, group)
+        block = get_block(node_tree["block_num"])
+        table.insert(group, block)
+        for j, conn_node in pairs(node_tree["connections"]) do
+            add_conn_node(conn_node, group)
+        end
+    end
+
+    -- pprint.pprint(groups_of_connected_blocks_new)
+
+    -- for i, block_1 in pairs(api.blocks) do
+    --     for j, block_2 in pairs(api.blocks) do
+    --         if block_1.id ~= block_2.id then
+    --             if check_connection_exist(block_1, block_2) == false then
+    --                 connected = check_connected(block_1, block_2)
+    --                 if connected == true then
+    --                     print("added connection", block_1.id, block_2.id)
+    --                     add_connection_to_list(block_1, block_2)
+    --                 end
+    --             end
+    --         end
+    --     end
+    -- end
+    -- for i, block_1 in pairs(api.blocks) do
+    --     for j, block_2 in pairs(api.blocks) do
+    --         if block_1.id == block_2.id then
+    --             if check_connection_exist(block_1, block_2) == false then
+    --                 add_connection_to_list(block_1, block_2)
+    --             end
+    --         end
+    --     end
+    -- end
+
+    -- Unite seperate groups
+    -- function merge_groups(groups)
+    --     result_group = {}
+    --     for i, group_a in pairs(groups) do 
+    --         for j, group_b in pairs(groups) do
+    --             if (j<i) then
+    --                 conn_res = check_if_groups_connected(group_a,group_b)
+    --                 if conn_res == true then
+    --                     if #groups == 2 then 
+    --                         unite_to_result(group_a,group_b,result_group)
+    --                         return result_group
+    --                     elseif #groups == 1 then
+    --                         return groups
+    --                     elseif #groups == 0 then 
+    --                         return null
+    --                     else
+    --                         unite_to_result(group_a,group_b,result_group)
+    --                         copy_other_groups_to_result(result_group)
+    --                         -- or just copy groups and remove groups a and b and insert the merged one
+    --                         result_group = merge_groups(result_group)
+    --                         return result_group
+    --                     end
+    --             end
+    --         end
+    --     end
+    -- end
+    -- loop over groups i
+    -- loop over groups j
+    -- if j<i 
+    -- check if groups are connected
+    -- if connected then merge in one and insert group in final groups
+    -- recursive merge groups
 
     -- Filtering uncertain groups
     -- pprint.pprint(groups_of_connected_blocks)
@@ -223,9 +345,9 @@ function group_blocks()
     --       table.insert(filtered_groups_list, group)
     --    end
     -- end
-    filtered_groups_list = groups_of_connected_blocks
+    filtered_groups_list = groups_of_connected_blocks_new
     -- builderbot_api.structure_list = groups_of_connected_blocks
-    
+
     -- pprint.pprint(filtered_groups_list)
     print(#filtered_groups_list)
     return filtered_groups_list
@@ -644,7 +766,7 @@ local create_process_rules_node = function(rules, rule_type, final_target)
             end
         end
         pprint.pprint("winning rules:", winning_rules)
-        pprint.pprint(final_target)
+        -- pprint.pprint(final_target)
         -- DebugMSG('final target:', final_target)
         if #targets_list > 0 then
             return false, true

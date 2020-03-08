@@ -27,7 +27,7 @@
         </debug>
       </actuators>
       <sensors>
-        <builderbot_camera_system implementation="default" show_frustum="true" show_tag_rays="false" show_led_rays="false" />
+        <builderbot_camera_system implementation="default" show_frustum="true" show_tag_rays="true" show_led_rays="false" />
         <builderbot_rangefinders implementation="default" light_medium="lights" show_rays="false" />
         <builderbot_differential_drive implementation="default" />
         <builderbot_electromagnet_system implementation="default" />
