@@ -136,14 +136,14 @@ function group_blocks()
 
         if orientation_diff > orientation_tolerance then
             result = false
-            print(block_1.id,block_2.id,"orientation fault")
+            -- print(block_1.id,block_2.id,"orientation fault")
         else
             if position_diff < distance_tolerance then
                 result = true
             else
                 result = false
-                print(block_1.id,block_2.id,"distance fault: ", position_diff)
-                
+                -- print(block_1.id,block_2.id,"distance fault: ", position_diff)
+
             end
         end
         

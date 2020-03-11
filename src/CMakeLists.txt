@@ -83,6 +83,10 @@ configure_file(
   ${CMAKE_SOURCE_DIR}/experiment/ants.argos.in
   ${CMAKE_BINARY_DIR}/experiment/ants.argos)
 
+configure_file(
+  ${CMAKE_SOURCE_DIR}/experiment/camera_test.argos.in
+  ${CMAKE_BINARY_DIR}/experiment/camera_test.argos)
+
 file(COPY ${CMAKE_SOURCE_DIR}/experiment/AppNode DESTINATION ${CMAKE_BINARY_DIR}/experiment)
 file(COPY ${CMAKE_SOURCE_DIR}/experiment/Tools DESTINATION ${CMAKE_BINARY_DIR}/experiment)
 
