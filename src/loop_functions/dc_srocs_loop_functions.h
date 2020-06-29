@@ -27,24 +27,25 @@ namespace argos {
 
       virtual void Reset();
 
-      //virtual void Destroy();
-
-      //virtual void PreStep();
+      virtual void PreStep();
 
       virtual void PostStep();
 
       virtual CColor GetFloorColor(const CVector2& c_position);
 
    private:
-      unsigned long m_unStep;
+
+      void LogEmbodiedEntityToFile(const std::string& str_entity_id,
+                                   const CEmbodiedEntity& c_embodied_entity);
+
       std::vector<CLightEntity*> m_vecLights;
-      std::vector<unsigned long> m_vecToggle;
+      std::vector<UInt32> m_vecToggle;
+
+      std::map<std::string, std::ofstream> m_mapOutputStreams;
 
       const static CColor m_cLightOn;
       const static CColor m_cLightOff;
       const static std::vector<std::tuple<const char*, CVector3, CColor, Real> > m_vecLightConfigs;
-
-
    };
 
 

@@ -11,8 +11,7 @@ namespace argos {
    /****************************************/
    /****************************************/
 
-   CDCSRoCSLoopFunctions::CDCSRoCSLoopFunctions() :
-      m_unStep(0) {}
+   CDCSRoCSLoopFunctions::CDCSRoCSLoopFunctions() {}
 
    /****************************************/
    /****************************************/
@@ -29,7 +28,7 @@ namespace argos {
       std::vector<std::string> vecToggle;
       Tokenize(strLightToggle, vecToggle, ",");
       for(const std::string& str : vecToggle) {
-         m_vecToggle.push_back(std::stoul(str));
+         m_vecToggle.push_back(static_cast<UInt32>(std::stoul(str)));
       }
       /* create lights */
       for(const std::tuple<const char*, CVector3, CColor, Real>& c_config : m_vecLightConfigs) {
@@ -49,16 +48,17 @@ namespace argos {
    /****************************************/
 
    void CDCSRoCSLoopFunctions::Reset() {
-      m_unStep = 0;
+      /* clear output streams */
+      m_mapOutputStreams.clear();
    }
 
    /****************************************/
    /****************************************/
 
-   void CDCSRoCSLoopFunctions::PostStep() {
-      m_unStep += 1;
-      for(unsigned long un_toggle : m_vecToggle) {
-         if(un_toggle == m_unStep) {
+   void CDCSRoCSLoopFunctions::PreStep() {
+      UInt32 m_unClock = GetSpace().GetSimulationClock();
+      for(UInt32 un_toggle : m_vecToggle) {
+         if(un_toggle == m_unClock) {
             for(CLightEntity* pc_light : m_vecLights) {
                if(pc_light->GetColor() == m_cLightOn) {
                   pc_light->SetColor(m_cLightOff);
@@ -75,6 +75,29 @@ namespace argos {
          GetSpace().GetFloorEntity().SetChanged();
       }
       catch(CARGoSException& ex) {}
+   }
+
+   /****************************************/
+   /****************************************/
+
+   void CDCSRoCSLoopFunctions::PostStep() {
+      using TValueType = std::pair<const std::string, CAny>;
+      try {
+         for(TValueType& t_robot : GetSpace().GetEntitiesByType("builderbot")) {
+            CBuilderBotEntity* pcBuilderBot =
+               any_cast<CBuilderBotEntity*>(t_robot.second);
+            LogEmbodiedEntityToFile(t_robot.first, pcBuilderBot->GetEmbodiedEntity());
+         }
+      }
+      catch(CARGoSException &ex) {}
+      try {
+         for(TValueType& t_block : GetSpace().GetEntitiesByType("block")) {
+            CBlockEntity* pcBlock =
+               any_cast<CBlockEntity*>(t_block.second);
+            LogEmbodiedEntityToFile(t_block.first, pcBlock->GetEmbodiedEntity());
+         }
+      }
+      catch(CARGoSException &ex) {}
    }
 
    /****************************************/
@@ -108,6 +131,35 @@ namespace argos {
       fTotalLight = std::min(fTotalLight, static_cast<Real>(UINT8_MAX));
       UInt8 unTotalLight = static_cast<UInt8>(fTotalLight);
       return CColor(unTotalLight, unTotalLight, unTotalLight);
+   }
+
+   /****************************************/
+   /****************************************/
+
+   void CDCSRoCSLoopFunctions::LogEmbodiedEntityToFile(const std::string& str_entity_id,
+                                                       const CEmbodiedEntity& c_embodied_entity) {
+      UInt32 unClock = GetSpace().GetSimulationClock();
+      std::map<std::string, std::ofstream>::iterator itOutputStream =
+         m_mapOutputStreams.find(str_entity_id);
+      if(itOutputStream == std::end(m_mapOutputStreams)) {
+         std::pair<std::map<std::string, std::ofstream>::iterator,bool> cResult =
+            m_mapOutputStreams.emplace(std::piecewise_construct,
+                                       std::forward_as_tuple(str_entity_id),
+                                       std::forward_as_tuple(str_entity_id + ".csv",
+                                                             std::ios_base::out |
+                                                             std::ios_base::trunc));
+         if(cResult.second) {
+            itOutputStream = cResult.first;
+         }
+         else {
+            THROW_ARGOSEXCEPTION("Could not insert output stream into map");
+         }
+      }
+      itOutputStream->second 
+         << unClock
+         << ","
+         << c_embodied_entity.GetOriginAnchor().Position
+         << std::endl;
    }
 
    /****************************************/
