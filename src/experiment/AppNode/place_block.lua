@@ -15,6 +15,7 @@ return -- return the following table
       -- recharge
       function()
          robot.electromagnet_system.set_discharge_mode("disable")
+         return false, true
       end,
       -- reach the block
       create_reach_block_node(target, _forward_distance),
@@ -23,6 +24,7 @@ return -- return the following table
          if target.type ~= nil then
             api.set_type(target.type)
          end
+         return false, true
       end,
       -- drop electromagnet
       function()
@@ -34,6 +36,7 @@ return -- return the following table
       -- recharge magnet
       function()
          robot.electromagnet_system.set_discharge_mode("disable")
+         return false, true
       end,
    },
 }

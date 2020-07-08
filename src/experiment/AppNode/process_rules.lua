@@ -53,10 +53,10 @@ function check_block_in_safe_zone(block)
     y = block.position.y
     z = block.position.z
     -- Define camera parameters (probably this is already provided by michael or maybe ask for it)
-    horizontal_fov = 0.60 -- 60 degrees
+    horizontal_fov = 0.80 -- 60 degrees
     vertical_fov = 0.55 -- 60 degrees
     maimum_visible_distance = 1
-    c = 0.05
+    c = 0.02
     y_limit = math.tan(vertical_fov / 2) * z - c
     x_limit = math.tan(horizontal_fov / 2) * z - c
     z_limit = maimum_visible_distance - c

@@ -307,9 +307,11 @@ builderbot_api.process_lights = function()
     end
     table.sort(builderbot_api.light_source,
                function(a, b) return a[2] > b[2] end)
-    if builderbot_api.light_source[1][1] == "front" then
+    if #builderbot_api.light_source >= 1 and
+        builderbot_api.light_source[1][1] == "front" then
         builderbot_api.light_axis = "Y"
-    elseif builderbot_api.light_source[1][1] == "back" then
+    elseif #builderbot_api.light_source >= 1 and
+        builderbot_api.light_source[1][1] == "back" then
         builderbot_api.light_axis = "X"
     end
     visualize_light_axis(builderbot_api.light_axis)
@@ -326,6 +328,5 @@ builderbot_api.process = function()
     builderbot_api.process_obstacles()
     builderbot_api.process_lights()
 end
-
 
 return builderbot_api
