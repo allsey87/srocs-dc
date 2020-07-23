@@ -221,7 +221,8 @@ function reset()
                                         "In Center, Exit ********************************************")
                                     print(
                                         "In Center, Exit ********************************************")
-                                    return false, true
+                                    -- return false, true
+                                    -- This return is to exist wall following, it is commented now so that the robot does not leave wall
                                 end
 
                             end, { -- Follow wall complex
@@ -384,7 +385,9 @@ function reset()
                                 }
                             }
                         }
-                    }, -- backup 11 cm
+                    }
+                    ------------------ END of Wall following -------------
+                    , -- backup 11 cm
                     {
                         type = "selector*",
                         children = {
